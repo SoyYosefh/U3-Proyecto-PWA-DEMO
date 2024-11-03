@@ -8,7 +8,7 @@ import Shippings from "../ecommerce/shipping/pages/Shippings";
 import Inventories from "../ecommerce/inventories/pages/Inventories";
 import Error from "../share/errors/pages/Error";
 
-const router = createBrowserRouter([
+const CommerceRouter  = createBrowserRouter([
     {
         path: "/",
         element: <Home />,
@@ -41,4 +41,4 @@ const router = createBrowserRouter([
         ],
     },
 ]);
-export default router;
+export default CommerceRouter ;
