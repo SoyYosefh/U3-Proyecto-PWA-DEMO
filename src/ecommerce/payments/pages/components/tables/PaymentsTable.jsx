@@ -8,56 +8,118 @@ import { MaterialReactTable } from 'material-react-table';
 
 //FIC: DB
 import { useEffect, useState } from 'react';
-import PaymentsStaticData from '../../../../../db/ecommerse/json/payments/PaymentsData';
+// import PaymentsStaticData from '../../../../../db/ecommerse/json/payments/PaymentsData';
+import { getAllPagos } from "../../../../services/remote/get/GetAllPagos";
 
-const PaymentsColumns = [
+// const PaymentColumns = [
+//     {
+//         accessorKey: "IdPaymentMethodOK",
+//         header: "ID OK",
+//         size: 30, //small column
+//     },
+//     {
+//         accessorKey: "IdPaymentMethodBK",
+//         header: "ID BK",
+//         size: 30, //small column
+//     },
+//     {
+//         accessorKey: "PaymentMethod",
+//         header: "Metodo de Pago",
+//         size: 150, //small column
+//     },
+//     {
+//         accessorKey: "Bank",
+//         header: "Banco",
+//         size: 50, //small column
+//     },
+//     {
+//         accessorKey: "AccountType",
+//         header: "Tipo de Cuenta",
+//         size: 30, //small column
+//     },
+//     {
+//         accessorKey: "Currency",
+//         header: "Divisa",
+//         size: 150, //small column
+//     },
+//     {
+//         accessorKey: "Status",
+//         header: "Estatus",
+//         size: 30, //small column
+//     },
+// ];
+
+const PaymentColumns = [
     {
-        accessorKey: "IdPaymentMethodOK",
-        header: "ID OK",
-        size: 30, //small column
+        accessorKey: "_id",
+        header: "ID",
+        size: 50,
     },
     {
-        accessorKey: "IdPaymentMethodBK",
-        header: "ID BK",
-        size: 30, //small column
+        accessorKey: "idpago",
+        header: "ID Pago",
+        size: 50,
     },
     {
-        accessorKey: "PaymentMethod",
-        header: "Metodo de Pago",
-        size: 150, //small column
+        accessorKey: "IdInstitutoOK",
+        header: "ID Instituto OK",
+        size: 100,
+    },
+    // Acceso personalizado para niveles anidados
+    {
+        accessorFn: (row) => row.forma_pago?.[0]?.pago_tarjeta?.Banco || "N/A",
+        header: "Banco Tarjeta",
+        size: 100,
     },
     {
-        accessorKey: "Bank",
-        header: "Banco",
-        size: 50, //small column
+        accessorFn: (row) => row.forma_pago?.[0]?.pago_tarjeta?.NombreTitular || "N/A",
+        header: "Nombre Titular Tarjeta",
+        size: 150,
     },
     {
-        accessorKey: "AccountType",
-        header: "Tipo de Cuenta",
-        size: 30, //small column
+        accessorFn: (row) => row.forma_pago?.[0]?.datos_transaccion?.IdTransaccion || "N/A",
+        header: "ID Transacción",
+        size: 100,
     },
     {
-        accessorKey: "Currency",
-        header: "Divisa",
-        size: 150, //small column
+        accessorFn: (row) => row.estatus?.[0]?.Actual || "N/A",
+        header: "Estatus Actual",
+        size: 100,
     },
     {
-        accessorKey: "Status",
-        header: "Estatus",
-        size: 30, //small column
+        accessorFn: (row) => row.estatus?.[0]?.Observacion || "N/A",
+        header: "Observación Estatus",
+        size: 150,
+    },
+    {
+        accessorFn: (row) => row.factura?.[0]?.Nombre || "N/A",
+        header: "Nombre Factura",
+        size: 150,
+    },
+    {
+        accessorFn: (row) => row.factura?.[0]?.RFC || "N/A",
+        header: "RFC Factura",
+        size: 100,
+    },
+    {
+        accessorFn: (row) => row.factura?.[0]?.domicilio?.[0]?.CalleNumero || "N/A",
+        header: "Calle y Número",
+        size: 150,
     },
 ];
+
+
 
 function PaymentsTable() {
 
     const [loadingTable, setLoadingTable] = useState(true);
-    const [data, setData] = useState([]);
+    const [PaymentsData, setPaymentsData] = useState([]);
 
     useEffect(() => {
         async function fetchData() {
             try {
-                //const productos = await getProducts();
-                setData(data);
+                const pagos = await getAllPagos();
+                setPaymentsData(pagos);
                 setLoadingTable(false);
             } catch (error) {
                 console.error("Error al obtener productos:", error);
@@ -69,8 +131,9 @@ function PaymentsTable() {
     return (
         <Box>
             <MaterialReactTable
-                columns={PaymentsColumns}
-                data={PaymentsStaticData}
+                columns={PaymentColumns}
+                // data={PaymentsStaticData}
+                data={PaymentsData}
                 initialState={{ density: "compact", showGlobalFilter: true }}
                 state={{ isLoading: loadingTable }}
                 renderTopToolbarCustomActions={
