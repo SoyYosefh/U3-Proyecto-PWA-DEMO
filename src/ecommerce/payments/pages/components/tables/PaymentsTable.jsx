@@ -5,49 +5,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import InfoIcon from "@mui/icons-material/Info";
 import { Box, IconButton, Stack, Tooltip } from "@mui/material";
 import { MaterialReactTable } from 'material-react-table';
-
+import { Dialog } from "@mui/material";
 //FIC: DB
 import { useEffect, useState } from 'react';
 // import PaymentsStaticData from '../../../../../db/ecommerse/json/payments/PaymentsData';
 import { getAllPagos } from "../../../../services/remote/get/GetAllPagos";
-
-// const PaymentColumns = [
-//     {
-//         accessorKey: "IdPaymentMethodOK",
-//         header: "ID OK",
-//         size: 30, //small column
-//     },
-//     {
-//         accessorKey: "IdPaymentMethodBK",
-//         header: "ID BK",
-//         size: 30, //small column
-//     },
-//     {
-//         accessorKey: "PaymentMethod",
-//         header: "Metodo de Pago",
-//         size: 150, //small column
-//     },
-//     {
-//         accessorKey: "Bank",
-//         header: "Banco",
-//         size: 50, //small column
-//     },
-//     {
-//         accessorKey: "AccountType",
-//         header: "Tipo de Cuenta",
-//         size: 30, //small column
-//     },
-//     {
-//         accessorKey: "Currency",
-//         header: "Divisa",
-//         size: 150, //small column
-//     },
-//     {
-//         accessorKey: "Status",
-//         header: "Estatus",
-//         size: 30, //small column
-//     },
-// ];
+import AddPaymentModal from "../modals/AddPaymentModal";
+// src\ecommerce\payments\pages\components\modals\AddPaymentModal.jsx
 
 const PaymentColumns = [
     {
@@ -108,12 +72,23 @@ const PaymentColumns = [
     },
 ];
 
-
-
 function PaymentsTable() {
 
     const [loadingTable, setLoadingTable] = useState(true);
     const [PaymentsData, setPaymentsData] = useState([]);
+    const [AddPaymentShowModal, setAddPaymentShowModal] = useState(false);
+
+    const fetchDataPayment = async () => {
+        setLoadingTable(true);
+        try {
+            const pagos = await getAllPagos();
+            setPaymentsData(pagos);
+            setLoadingTable(false);
+        } catch (error) {
+            console.error(`Error al obtener los pagos`, error);
+        }
+        setLoadingTable(false);
+    };
 
     useEffect(() => {
         async function fetchData() {
@@ -130,46 +105,60 @@ function PaymentsTable() {
 
     return (
         <Box>
-            <MaterialReactTable
-                columns={PaymentColumns}
-                // data={PaymentsStaticData}
-                data={PaymentsData}
-                initialState={{ density: "compact", showGlobalFilter: true }}
-                state={{ isLoading: loadingTable }}
-                renderTopToolbarCustomActions={
-                    // eslint-disable-next-line no-unused-vars
-                    ({ table }) => (
-                        <>
-                            {/* ------- BARRA DE ACCIONES ------ */}
-                            <Stack direction="row" sx={{ m: 1 }}>
-                                <Box>
-                                    <Tooltip title="Agregar">
-                                        <IconButton >
-                                            <AddCircleIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Tooltip title="Editar">
-                                        <IconButton>
-                                            <EditIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Tooltip title="Eliminar">
-                                        <IconButton>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Tooltip title="Detalles ">
-                                        <IconButton>
-                                            <InfoIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                </Box>
-                            </Stack>
-                            {/* ------- BARRA DE ACCIONES FIN ------ */}
-                        </>
-                    )
-                }
-            />
+            <Box>
+                <MaterialReactTable
+                    columns={PaymentColumns}
+                    // data={PaymentsStaticData}
+                    data={PaymentsData}
+                    initialState={{ density: "compact", showGlobalFilter: true }}
+                    state={{ isLoading: loadingTable }}
+                    renderTopToolbarCustomActions={
+                        // eslint-disable-next-line no-unused-vars
+                        ({ table }) => (
+                            <>
+                                {/* ------- BARRA DE ACCIONES ------ */}
+                                <Stack direction="row" sx={{ m: 1 }}>
+                                    <Box>
+                                        <Tooltip title="Agregar">
+                                            <IconButton
+                                                onClick={() => setAddPaymentShowModal(true)}
+                                            >
+                                                <AddCircleIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip title="Editar">
+                                            <IconButton>
+                                                <EditIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip title="Eliminar">
+                                            <IconButton>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip title="Detalles ">
+                                            <IconButton>
+                                                <InfoIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Box>
+                                </Stack>
+                                {/* ------- BARRA DE ACCIONES FIN ------ */}
+                            </>
+                        )
+                    }
+                />
+            </Box>
+
+            {/* Modales */}
+            <Dialog open={AddPaymentShowModal}>
+                <AddPaymentModal
+                    fetchDataPayment={fetchDataPayment}
+                    AddPaymentShowModal={AddPaymentShowModal}
+                    setAddPaymentShowModal={setAddPaymentShowModal}
+                    onClose={() => setAddPaymentShowModal(false)}
+                />
+            </Dialog>
         </Box>
     );
 }
