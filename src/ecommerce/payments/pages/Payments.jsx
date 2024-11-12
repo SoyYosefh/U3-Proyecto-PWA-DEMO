@@ -14,7 +14,7 @@ function Payments() {
         <div>
             <h2>Pays - Types</h2>
             <Box>
-                {/* FIC: llamada intrinsica (props) */}
+                {/* llamada intrinsica (props) */}
                 <CommerseNavTabs
                     setCurrentRowInCommerseTab={setCurrentRowInCommerseTab}
                     setCurrentTabInPrincipalTab={setCurrentTabInPrincipalTab}

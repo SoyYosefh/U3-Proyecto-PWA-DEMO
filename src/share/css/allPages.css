@@ -14,7 +14,7 @@ head {
   display: flex;
   height: 100%;
   width: 100%;
-  /* FIC: quitar */
+  
   background-color: #ee04a8;
 }
 #div-app {
@@ -24,7 +24,7 @@ head {
     width: 100%;
     border-radius: 20px;
     padding: 0rem 1rem;
-    /* FIC: quitar */
+    
     background-color: #2bee04;
   }
   
@@ -34,7 +34,7 @@ head {
     width: 100%;
     bottom: 0 ;
     right: 0;
-    /* FIC: quitar */
+    
     background-color:#42f486
   }
   
@@ -44,7 +44,7 @@ head {
     width: 100%;
     border-radius: 20px;
     padding: 0rem 1rem;
-    /* FIC: quitar */
+    
     background-color: #eeb004;
   }
   
@@ -54,7 +54,7 @@ head {
     width: 100%;
     border-radius: 20px;
     padding: 0rem 1rem;
-    /* FIC: quitar */
+    
     background-color: #0490ee;
   }
   

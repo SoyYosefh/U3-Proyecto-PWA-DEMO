@@ -43,7 +43,7 @@ function ResponsiveAppBar() {
         setMyPages(e.target.innerText.toUpperCase());
     }
 
-    //FIC: useEffect
+    // useEffect
     useEffect(() => {
         switch (myPages) {
             case "":

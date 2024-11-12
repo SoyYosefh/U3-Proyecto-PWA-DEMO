@@ -1,4 +1,4 @@
-//FIC: Material UI
+// Material UI
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -6,7 +6,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import { Box, IconButton, Stack, Tooltip } from "@mui/material";
 import { MaterialReactTable } from 'material-react-table';
 import { Dialog } from "@mui/material";
-//FIC: DB
+// DB
 import { useEffect, useState } from 'react';
 // import PaymentsStaticData from '../../../../../db/ecommerse/json/payments/PaymentsData';
 import { getAllPagos } from "../../../../services/remote/get/GetAllPagos";
