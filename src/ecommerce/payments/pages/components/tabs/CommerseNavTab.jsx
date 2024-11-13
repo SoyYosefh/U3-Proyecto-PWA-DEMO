@@ -16,9 +16,9 @@ const CommerseNavTabs = ({ currentRowInCommerseTab, setCurrentNameTabInPrincipal
             case "Pagos":
                 setCurrentTabIndex(0);
                 break;
-            case "Otros":
-                setCurrentTabIndex(1);
-                break;
+            // case "Otros":
+            //     setCurrentTabIndex(1);
+            //     break;
         }
     };
     return (

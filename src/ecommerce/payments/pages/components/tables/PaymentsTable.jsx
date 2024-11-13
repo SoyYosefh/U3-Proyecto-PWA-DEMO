@@ -3,7 +3,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import InfoIcon from "@mui/icons-material/Info";
-import { Box, IconButton, Stack, Tooltip } from "@mui/material";
+import { Box, IconButton, Stack, Tooltip, darken } from "@mui/material";
 import { MaterialReactTable } from 'material-react-table';
 import { Dialog } from "@mui/material";
 // DB
@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 // import PaymentsStaticData from '../../../../../db/ecommerse/json/payments/PaymentsData';
 import { getAllPagos } from "../../../../services/remote/get/GetAllPagos";
 import AddPaymentModal from "../modals/AddPaymentModal";
+import UpdatePaymentModal from "../modals/UpdatePaymentModal";
 // src\ecommerce\payments\pages\components\modals\AddPaymentModal.jsx
 
 const PaymentColumns = [
@@ -27,6 +28,11 @@ const PaymentColumns = [
     {
         accessorKey: "IdInstitutoOK",
         header: "ID Instituto OK",
+        size: 100,
+    },
+    {
+        accessorKey: "MontoTotal",
+        header: "Monto Total",
         size: 100,
     },
     // Acceso personalizado para niveles anidados
@@ -77,6 +83,10 @@ function PaymentsTable() {
     const [loadingTable, setLoadingTable] = useState(true);
     const [PaymentsData, setPaymentsData] = useState([]);
     const [AddPaymentShowModal, setAddPaymentShowModal] = useState(false);
+    const [UpdatePaymentShowModal, setUpdatePaymentShowModal] = useState(false);
+
+    const [paymentSel, setPaymentSel] = useState({});
+    const [idSelectedRowPayment, setIdSelectedRowPayment] = useState(0);
 
     const fetchDataPayment = async () => {
         setLoadingTable(true);
@@ -84,6 +94,7 @@ function PaymentsTable() {
             const pagos = await getAllPagos();
             setPaymentsData(pagos);
             setLoadingTable(false);
+            console.log("TABLA ACTUALIZADA");
         } catch (error) {
             console.error(`Error al obtener los pagos`, error);
         }
@@ -112,6 +123,22 @@ function PaymentsTable() {
                     data={PaymentsData}
                     initialState={{ density: "compact", showGlobalFilter: true }}
                     state={{ isLoading: loadingTable }}
+                    muiTableBodyRowProps={({ row }) => ({
+                        //CLIC EN UN ROW
+                        onClick: () => {
+                            // console.log("ROW", row.original, "ID", row.id);
+                            setPaymentSel(row.original);
+                            setIdSelectedRowPayment(row.id);
+                        },
+                        sx: {
+                            // si esta cargando no debes dar click aun
+                            cursor: loadingTable ? "not-allowed" : "pointer",
+                            backgroundColor:
+                                idSelectedRowPayment === row.id
+                                    ? darken("#EFF999", 0.01)
+                                    : "inherit",
+                        },
+                    })}
                     renderTopToolbarCustomActions={
                         // eslint-disable-next-line no-unused-vars
                         ({ table }) => (
@@ -127,7 +154,9 @@ function PaymentsTable() {
                                             </IconButton>
                                         </Tooltip>
                                         <Tooltip title="Editar">
-                                            <IconButton>
+                                            <IconButton
+                                                onClick={() => setUpdatePaymentShowModal(true)}
+                                            >
                                                 <EditIcon />
                                             </IconButton>
                                         </Tooltip>
@@ -159,6 +188,16 @@ function PaymentsTable() {
                     onClose={() => setAddPaymentShowModal(false)}
                 />
             </Dialog>
+            <Dialog open={UpdatePaymentShowModal}>
+                <UpdatePaymentModal
+                    fetchDataPayment={fetchDataPayment}
+                    UpdatePaymentShowModal={UpdatePaymentShowModal}
+                    setUpdatePaymentShowModal={setUpdatePaymentShowModal}
+                    onClose={() => setUpdatePaymentShowModal(false)}
+                    paymentToUpdate={paymentSel}
+                />
+            </Dialog>
+
         </Box>
     );
 }
